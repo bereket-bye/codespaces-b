@@ -1,159 +1,224 @@
 /* Basic Reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    transition: background-color 0.3s, color 0.3s;
-    background-color: #f0f0f0;
-    background-image: url('your-image.jpg'); /* Background Image */
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    flex-direction: column;
-  }
-  
-  body.dark-mode {
-    background-color: #333;
-    color: #fff;
-    background-image: url('your-dark-image.jpg'); /* Dark Mode Background Image */
-  }
-  
-  h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  button {
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    margin-top: 20px;
-  }
-  
-  button:disabled {
-    background-color: #ccc;
-  }
-  
-  /* Home Page Styling */
-  .home-container {
-    text-align: center;
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    width: 300px;
-  }
-  
-  .home-container.dark-mode {
-    background-color: #444;
-  }
-  
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .card {
-    width: 60px;
-    height: 60px;
-    background-color: #007BFF;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 32px;
-    color: transparent;
-  }
-  
-  .card.flipped {
-    background-color: #fff;
-    color: black;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  .game-stats {
-    font-size: 1.2rem;
-  }
-  
-  /* Dark Mode */
-  body.dark-mode .card {
-    background-color: #444;
-  }
-  
-  body.dark-mode .card.flipped {
-    background-color: #222;
-    color: white;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-  }
-  
-  body.dark-mode button {
-    background-color: #28a745;
-  }
-  
-  /* Adjust Home Page button for Dark Mode */
-  .home-container.dark-mode button {
-    background-color: #28a745;
-  }
-  
-  /* Description Modal */
-  .description-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-  
-  .description-content {
-    background-color: white;
-    padding: 30px;
-    border-radius: 10px;
-    width: 300px;
-    text-align: center;
-  }
-  
-  .description-modal button {
-    margin-top: 20px;
-  }
-  
-  #restartGameBtn {
-    margin-top: 20px;
-    display: inline-block;
-    text-decoration: none;
-    color: #fff;
-    background-color: #007BFF;
-    padding: 10px 20px;
-    border-radius: 5px;
-  }
-  
-  #restartGameBtn:hover {
-    background-color: #0056b3;
-  }
-  
-  a {
-    color: #007BFF;
-    text-decoration: none;
-  }
-  
-  a:hover {
-    text-decoration: underline;
-  }
-  
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+  background-color: #f0f0f0;
+  background-image: url('your-image.jpg'); /* Background Image */
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  transition: all 0.5s ease-in-out;
+}
+
+body.dark-mode {
+  background-color: #181818;
+  color: #e0e0e0;
+  background-image: url('your-dark-image.jpg'); /* Dark Mode Background Image */
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 20px;
+}
+
+button:disabled {
+  background-color: #ccc;
+}
+
+/* Home Page Styling */
+.home-container {
+  text-align: center;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+.home-container.dark-mode {
+  background-color: #444;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.card {
+  width: 60px;
+  height: 60px;
+  background-color: #007BFF;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  color: transparent;
+  transition: transform 0.3s ease-in-out;
+}
+
+.card.flipped {
+  background-color: #fff;
+  color: black;
+  transform: rotateY(180deg);
+}
+
+.card.matched {
+  background-color: #90ee90; /* Light green background for matched cards */
+}
+
+.game-stats {
+  font-size: 1.2rem;
+}
+
+/* Dark Mode */
+body.dark-mode .card {
+  background-color: #444;
+}
+
+body.dark-mode .card.flipped {
+  background-color: #222;
+  color: white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode button {
+  background-color: #28a745;
+}
+
+/* Adjust Home Page button for Dark Mode */
+.home-container.dark-mode button {
+  background-color: #28a745;
+}
+
+/* Description Modal */
+.description-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.description-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+}
+
+.description-modal button {
+  margin-top: 20px;
+}
+
+#restartGameBtn {
+  margin-top: 20px;
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  background-color: #007BFF;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+#restartGameBtn:hover {
+  background-color: #0056b3;
+}
+
+a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* New Dark Mode Styles */
+body.dark-mode {
+  background-color: #181818;
+  color: #e0e0e0;
+}
+
+body.dark-mode h1,
+body.dark-mode .game-stats p {
+  color: #e0e0e0;
+}
+
+body.dark-mode .card {
+  background-color: #444;
+  color: #e0e0e0;
+}
+
+body.dark-mode .card.flipped {
+  background-color: #333;
+  color: #e0e0e0;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+}
+
+body.dark-mode .card.matched {
+  background-color: #28a745; /* Green background for matched cards */
+}
+
+body.dark-mode .home-container,
+body.dark-mode .description-content {
+  background-color: #2c2c2c;
+}
+
+body.dark-mode .home-container button,
+body.dark-mode .description-modal button {
+  background-color: #4CAF50;
+}
+
+/* Dark Mode Button positioned top right */
+.dark-mode-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 15px;
+  font-size: 18px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.dark-mode-btn:hover {
+  background-color: #45a049;
+}
+
+.dark-mode-btn:focus {
+  outline: none;
+}
