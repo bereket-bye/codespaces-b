@@ -1,18 +1,37 @@
-// Dark Mode toggle function
-const toggleDarkMode = () => {
+// Initialize Sound Settings
+let soundEnabled = true;
+
+// Load Sound Effects
+const flipSound = new Audio('flip-sound.mp3');
+const matchSound = new Audio('match-sound.mp3');
+const winSound = new Audio('win-sound.mp3');
+
+// Add event listener for sound toggle
+document.getElementById('soundToggle').addEventListener('change', (event) => {
+  soundEnabled = event.target.checked;
+});
+
+// Add event listener for settings button
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  document.getElementById('settingsModal').style.display = 'flex';
+});
+
+// Close the settings modal
+document.getElementById('closeSettingsBtn').addEventListener('click', () => {
+  document.getElementById('settingsModal').style.display = 'none';
+});
+
+// Dark Mode Toggle
+document.getElementById('toggleDarkModeBtn').addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
-  const modeText = document.body.classList.contains('dark-mode') ? '🌞 Light Mode' : '🌙 Dark Mode';
-  document.getElementById('toggleDarkModeBtn').textContent = modeText;
-};
+});
 
-// Event listener for dark mode toggle
-document.getElementById('toggleDarkModeBtn').addEventListener('click', toggleDarkMode);
-
-// Show the game page when "Start Game" is clicked
+// Game Logic
 document.getElementById('startGameBtn').addEventListener('click', () => {
   document.getElementById('homePage').style.display = 'none';
   document.getElementById('gamePage').style.display = 'block';
-  startGame();
+
+  resetGame();  // Reset game state when you first start
   startTimer(); // Start the timer when the game starts
 });
 
@@ -63,8 +82,8 @@ function generateCards() {
 // Create card elements
 function createCardElements() {
   const cardGrid = document.querySelector('.card-grid');
-  cardGrid.innerHTML = '';
-  
+  cardGrid.innerHTML = '';  // Clear any existing cards
+
   cards.forEach((emoji, index) => {
     const card = document.createElement('div');
     card.classList.add('card');
@@ -78,11 +97,13 @@ function createCardElements() {
     cardGrid.appendChild(card);
   });
 
-  startGame();
+  startGame();  // Ensure the game logic is initialized and ready to go
 }
 
 // Handle flipping cards
 function flipCard(card) {
+  if (soundEnabled) flipSound.play();
+
   const cardText = card.querySelector('span');
   cardText.style.visibility = 'visible';
   card.classList.add('flipped');
@@ -101,9 +122,12 @@ function flipCard(card) {
         card.classList.add('matched');
       });
 
+      if (soundEnabled) matchSound.play();
+
       flippedCards = [];
 
       if (matchedPairs === cards.length / 2) {
+        if (soundEnabled) winSound.play();
         setTimeout(() => {
           alert('You win!');
           levelUp();
@@ -121,6 +145,7 @@ function flipCard(card) {
   }
 }
 
+// Initialize the game mechanics
 function startGame() {
   document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('click', () => {
@@ -131,7 +156,11 @@ function startGame() {
   });
 }
 
+// Timer function
 function startTimer() {
+  // Ensure the timer starts only once
+  if (timer) return;
+
   timer = setInterval(() => {
     seconds++;
     if (seconds === 60) {
@@ -148,21 +177,28 @@ function levelUp() {
   if (level > 1) {
     emojis.push('🍕', '🍟', '🍩', '🍔', '🍗', '🍪');
   }
-  generateCards();
+  generateCards();  // Generate new set of cards on level up
 }
 
-document.getElementById('restartGameBtn').addEventListener('click', () => {
+// Reset game state (called when "Start Game" is clicked)
+function resetGame() {
   level = 1;
   matchedPairs = 0;
   moves = 0;
   seconds = 0;
   minutes = 0;
+
   document.getElementById('moves').textContent = `Moves: ${moves}`;
   document.getElementById('matches').textContent = `Matches: ${matchedPairs}`;
   document.getElementById('level').textContent = `Level: ${level}`;
   document.getElementById('timer').textContent = `Time: 00:00`;
 
-  generateCards();
+  generateCards();  // Initialize cards and start game
+}
+
+// Restart game functionality
+document.getElementById('restartGameBtn').addEventListener('click', () => {
   clearInterval(timer);
-  startTimer();
+  resetGame(); // Reset and start the game again
+  startTimer();  // Restart the timer
 });
