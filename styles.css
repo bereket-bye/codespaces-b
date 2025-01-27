@@ -222,3 +222,43 @@ body.dark-mode .description-modal button {
 .dark-mode-btn:focus {
   outline: none;
 }
+
+/* Settings Button positioned top left */
+.settings-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  padding: 10px 15px;
+  font-size: 18px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.settings-btn:hover {
+  background-color: #45a049;
+}
+
+/* Settings Modal */
+.settings-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.settings-content {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+}
