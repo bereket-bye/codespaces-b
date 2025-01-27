@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Emoji Memory Match Game</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Linking CSS file -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -46,9 +46,22 @@
     </div>
   </div>
 
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="settings-modal">
+    <div class="settings-content">
+      <h2>Game Settings</h2>
+      <label for="soundToggle">🎧 Sound Effects</label>
+      <input type="checkbox" id="soundToggle" checked>
+      <button id="closeSettingsBtn">Close Settings</button>
+    </div>
+  </div>
+
+  <!-- Settings Button -->
+  <button id="settingsBtn" class="settings-btn">⚙️</button>
+
   <!-- Dark Mode Button -->
   <button id="toggleDarkModeBtn" class="dark-mode-btn">🌙 Dark Mode</button>
 
-  <script src="script.js"></script> <!-- Linking JavaScript file -->
+  <script src="script.js"></script>
 </body>
 </html>
