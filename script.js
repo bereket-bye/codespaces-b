@@ -5,7 +5,7 @@ const toggleDarkMode = () => {
   document.getElementById('toggleDarkModeBtn').textContent = modeText;
 };
 
-// Event listener for dark mode toggle
+// Event listener for dark mode 
 document.getElementById('toggleDarkModeBtn').addEventListener('click', toggleDarkMode);
 
 // Show the game page when "Start Game" is clicked
