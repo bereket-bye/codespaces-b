@@ -8,7 +8,7 @@
 body {
   font-family: Arial, sans-serif;
   transition: background-color 0.3s, color 0.3s;
-  background-color: #f0f0f0;
+  background-color: #f0f0f0
   background-image: url('your-image.jpg'); /* Background Image */
   background-size: cover;
   display: flex;
