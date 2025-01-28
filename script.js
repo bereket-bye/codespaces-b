@@ -12,7 +12,9 @@ document.getElementById('toggleDarkModeBtn').addEventListener('click', toggleDar
 document.getElementById('startGameBtn').addEventListener('click', () => {
   document.getElementById('homePage').style.display = 'none';
   document.getElementById('gamePage').style.display = 'block';
-  startGame();
+
+  // Initialize the game and start the timer
+  resetGame();  // Reset game state when you first start
   startTimer(); // Start the timer when the game starts
 });
 
@@ -63,8 +65,8 @@ function generateCards() {
 // Create card elements
 function createCardElements() {
   const cardGrid = document.querySelector('.card-grid');
-  cardGrid.innerHTML = '';
-  
+  cardGrid.innerHTML = '';  // Clear any existing cards
+
   cards.forEach((emoji, index) => {
     const card = document.createElement('div');
     card.classList.add('card');
@@ -78,7 +80,7 @@ function createCardElements() {
     cardGrid.appendChild(card);
   });
 
-  startGame();
+  startGame();  // Ensure the game logic is initialized and ready to go
 }
 
 // Handle flipping cards
@@ -121,6 +123,7 @@ function flipCard(card) {
   }
 }
 
+// Initialize the game mechanics
 function startGame() {
   document.querySelectorAll('.card').forEach(card => {
     card.addEventListener('click', () => {
@@ -131,7 +134,11 @@ function startGame() {
   });
 }
 
+// Timer function
 function startTimer() {
+  // Ensure the timer starts only once
+  if (timer) return;
+
   timer = setInterval(() => {
     seconds++;
     if (seconds === 60) {
@@ -148,21 +155,28 @@ function levelUp() {
   if (level > 1) {
     emojis.push('🍕', '🍟', '🍩', '🍔', '🍗', '🍪');
   }
-  generateCards();
+  generateCards();  // Generate new set of cards on level up
 }
 
-document.getElementById('restartGameBtn').addEventListener('click', () => {
+// Reset game state (called when "Start Game" is clicked)
+function resetGame() {
   level = 1;
   matchedPairs = 0;
   moves = 0;
   seconds = 0;
   minutes = 0;
+
   document.getElementById('moves').textContent = `Moves: ${moves}`;
   document.getElementById('matches').textContent = `Matches: ${matchedPairs}`;
   document.getElementById('level').textContent = `Level: ${level}`;
   document.getElementById('timer').textContent = `Time: 00:00`;
 
-  generateCards();
+  generateCards();  // Initialize cards and start game
+}
+
+// Restart game functionality
+document.getElementById('restartGameBtn').addEventListener('click', () => {
   clearInterval(timer);
-  startTimer();
+  resetGame(); // Reset and start the game again
+  startTimer();  // Restart the timer
 });
