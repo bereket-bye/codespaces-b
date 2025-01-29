@@ -1,241 +1,270 @@
-// Dark Mode toggle function
-const toggleDarkMode = () => {
-  document.body.classList.toggle('dark-mode');
-  const modeText = document.body.classList.contains('dark-mode') ? '🌞 Light Mode' : '🌙 Dark Mode';
-  document.getElementById('toggleDarkModeBtn').textContent = modeText;
-};
 
-// Event listener for dark mode toggle
-document.getElementById('toggleDarkModeBtn').addEventListener('click', toggleDarkMode);
 
-// Show the game page when "Start Game" is clicked
-document.getElementById('startGameBtn').addEventListener('click', () => {
-  document.getElementById('homePage').style.display = 'none';
-  document.getElementById('gamePage').style.display = 'block';
-  resetGame(); // Reset game state when you first start
-  startTimer(); // Start the timer when the game starts
-});
 
-// Go home button functionality
-document.getElementById('goHomeBtn').addEventListener('click', () => {
-  document.getElementById('homePage').style.display = 'block';
-  document.getElementById('gamePage').style.display = 'none';
-});
-
-// Show description modal
-document.getElementById('descriptionLink').addEventListener('click', () => {
-  document.getElementById('descriptionModal').style.display = 'flex';
-});
-
-// Close the description modal
-document.getElementById('closeDescriptionBtn').addEventListener('click', () => {
-  document.getElementById('descriptionModal').style.display = 'none';
-});
-
-// Timer variables
-let timer;
-let seconds = 0;
-let minutes = 0;
-let level = 1;
-let matchedPairs = 0;
-let moves = 0;
-let flippedCards = [];
-const emojis = ['🍎', '🍌', '🍒', '🍇', '🍋', '🍊', '🍓', '🍉'];
-let cards = [];
-let timeBonus = 0;
-let score = 0;
-let isPaused = false;
-
-// Shuffle function
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
+/* Basic Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-// Generate and shuffle cards
-function generateCards() {
-  cards = [...emojis, ...emojis];
-  shuffle(cards);
-  createCardElements();
+body {
+  font-family: Arial, sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+  background-color: #f0f0f0;
+  background-image: url('your-image.jpg'); /* Background Image */
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  transition: all 0.5s ease-in-out;
 }
 
-// Create card elements
-function createCardElements() {
-  const cardGrid = document.querySelector('.card-grid');
-  cardGrid.innerHTML = ''; // Clear any existing cards
-  cards.forEach((emoji, index) => {
-    const card = document.createElement('div');
-    card.classList.add('card');
-    card.dataset.emoji = emoji;
-    const cardText = document.createElement('span');
-    cardText.textContent = emoji;
-    cardText.style.visibility = 'hidden';
-    card.appendChild(cardText);
-    cardGrid.appendChild(card);
-  });
-  startGame(); // Ensure the game logic is initialized and ready to go
+body.dark-mode {
+  background-color: #181818;
+  color: #e0e0e0;
+  background-image: url('your-dark-image.jpg'); /* Dark Mode Background Image */
+}
+/* Pause/Resume Button */
+#pauseResumeBtn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #ffc107;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: transform 0.2s ease-in-out;
 }
 
-// Handle flipping cards
-function flipCard(card) {
-  const cardText = card.querySelector('span');
-  cardText.style.visibility = 'visible';
-  card.classList.add('flipped');
-  flippedCards.push(card);
-  document.getElementById('flipSound').play(); // Play flip sound
-  if (flippedCards.length === 2) {
-    moves++;
-    document.getElementById('moves').textContent = `Moves: ${moves}`;
-    if (flippedCards[0].dataset.emoji === flippedCards[1].dataset.emoji) {
-      matchedPairs++;
-      document.getElementById('matches').textContent = `Matches: ${matchedPairs}`;
-      flippedCards.forEach(card => {
-        card.querySelector('span').style.color = 'green';
-        card.classList.add('matched');
-      });
-      document.getElementById('matchSound').play(); // Play match sound
-      flippedCards = [];
-      if (matchedPairs === cards.length / 2) {
-        timeBonus = Math.max(30 - (minutes * 60 + seconds), 0); // Calculate time bonus
-        document.getElementById('timeBonus').textContent = `Time Bonus: ${timeBonus}s`;
-        calculateScore(); // Calculate final score
-        setTimeout(() => {
-          document.getElementById('winSound').play(); // Play win sound
-          alert(`You win! Time Bonus: ${timeBonus}s | Score: ${score}`);
-          checkForPrize(); // Check if player earned a prize
-          levelUp();
-        }, 500);
-      }
-    } else {
-      setTimeout(() => {
-        flippedCards.forEach(card => {
-          card.classList.remove('flipped');
-          card.querySelector('span').style.visibility = 'hidden';
-        });
-        flippedCards = [];
-      }, 1000);
-    }
-  }
+#pauseResumeBtn:hover {
+  transform: scale(1.05);
+}
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
 }
 
-// Initialize the game mechanics
-function startGame() {
-  document.querySelectorAll('.card').forEach(card => {
-    card.addEventListener('click', () => {
-      if (!card.classList.contains('flipped') && flippedCards.length < 2 && !isPaused) {
-        flipCard(card);
-      }
-    });
-  });
+button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 20px;
+  transition: transform 0.2s ease-in-out;
 }
 
-// Timer function
-function startTimer() {
-  if (timer) return;
-  timer = setInterval(() => {
-    if (!isPaused) {
-      seconds++;
-      if (seconds === 60) {
-        minutes++;
-        seconds = 0;
-      }
-      document.getElementById('timer').textContent = `Time: ${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-    }
-  }, 1000);
+button:hover {
+  transform: scale(1.05);
 }
 
-// Level Up
-function levelUp() {
-  level++;
-  document.getElementById('level').textContent = `Level: ${level}`;
-  if (level > 1) {
-    emojis.push('🍕', '🍟', '🍩', '🍔', '🍗', '🍪');
-  }
-  document.getElementById('levelUpSound').play(); // Play level-up sound
-  generateCards(); // Generate new set of cards on level up
+button:disabled {
+  background-color: #ccc;
 }
 
-// Reset game state (called when "Start Game" is clicked)
-function resetGame() {
-  level = 1;
-  matchedPairs = 0;
-  moves = 0;
-  seconds = 0;
-  minutes = 0;
-  timeBonus = 0;
-  score = 0;
-  document.getElementById('moves').textContent = `Moves: ${moves}`;
-  document.getElementById('matches').textContent = `Matches: ${matchedPairs}`;
-  document.getElementById('level').textContent = `Level: ${level}`;
-  document.getElementById('timer').textContent = `Time: 00:00`;
-  document.getElementById('timeBonus').textContent = `Time Bonus: 0s`;
-  document.getElementById('score').textContent = `Score: 0`;
-  generateCards(); // Initialize cards and start game
+/* Home Page Styling */
+.home-container {
+  text-align: center;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  width: 300px;
 }
 
-// Restart game functionality
-document.getElementById('restartGameBtn').addEventListener('click', () => {
-  clearInterval(timer);
-  resetGame(); // Reset and start the game again
-  startTimer(); // Restart the timer
-});
-
-// Pause/Resume Game
-document.getElementById('pauseResumeBtn').addEventListener('click', () => {
-  isPaused = !isPaused;
-  if (isPaused) {
-    clearInterval(timer);
-    document.getElementById('pauseResumeBtn').textContent = '▶️ Resume';
-    document.querySelectorAll('.card').forEach(card => {
-      card.style.pointerEvents = 'none'; // Disable card clicks
-    });
-  } else {
-    startTimer();
-    document.getElementById('pauseResumeBtn').textContent = '⏸️ Pause';
-    document.querySelectorAll('.card').forEach(card => {
-      card.style.pointerEvents = 'auto'; // Enable card clicks
-    });
-  }
-});
-
-// Calculate Score
-function calculateScore() {
-  const timePenalty = minutes * 60 + seconds; // Total time taken
-  const movePenalty = moves * 5; // Penalty for each move
-  score = Math.max(1000 - timePenalty - movePenalty, 0); // Base score formula
-  document.getElementById('score').textContent = `Score: ${score}`;
-  updateHighScores(); // Update high scores
+.home-container.dark-mode {
+  background-color: #444;
 }
 
-// Check for Prize
-function checkForPrize() {
-  if (score > 800) {
-    alert(`🎉 Congratulations! You earned a prize: Gold Medal! 🥇`);
-  } else if (score > 600) {
-    alert(`🎉 Congratulations! You earned a prize: Silver Medal! 🥈`);
-  } else if (score > 400) {
-    alert(`🎉 Congratulations! You earned a prize: Bronze Medal! 🥉`);
-  } else {
-    alert(`Good job! Keep practicing to earn a prize next time!`);
-  }
+.high-scores {
+  margin-top: 20px;
 }
 
-// High Scores
-let highScores = JSON.parse(localStorage.getItem('highScores')) || [];
-
-function updateHighScores() {
-  highScores.push(score);
-  highScores.sort((a, b) => b - a);
-  highScores = highScores.slice(0, 5); // Keep top 5 scores
-  localStorage.setItem('highScores', JSON.stringify(highScores));
-  displayHighScores();
+.high-scores h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
 }
 
-function displayHighScores() {
-  const highScoresList = document.getElementById('highScoresList');
-  highScoresList.innerHTML = highScores.map((score, index) => `<li>${index + 1}. ${score} points</li>`).join('');
+.high-scores ul {
+  list-style: none;
+  padding: 0;
 }
 
-displayHighScores();
+.high-scores li {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.card {
+  width: 60px;
+  height: 60px;
+  background-color: #007BFF;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  color: transparent;
+  transition: transform 0.3s ease-in-out, background-color 0.3s;
+}
+
+.card.flipped {
+  background-color: #fff;
+  color: black;
+  transform: rotateY(180deg);
+}
+
+.card.matched {
+  background-color: #90ee90; /* Light green background for matched cards */
+  animation: bounce 0.5s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.game-stats {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+/* Dark Mode */
+body.dark-mode .card {
+  background-color: #444;
+}
+
+body.dark-mode .card.flipped {
+  background-color: #222;
+  color: white;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode button {
+  background-color: #28a745;
+}
+
+/* Adjust Home Page button for Dark Mode */
+.home-container.dark-mode button {
+  background-color: #28a745;
+}
+
+/* Description Modal */
+.description-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.description-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+}
+
+.description-modal button {
+  margin-top: 20px;
+}
+
+#restartGameBtn {
+  margin-top: 20px;
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  background-color: #007BFF;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+#restartGameBtn:hover {
+  background-color: #0056b3;
+}
+
+a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* New Dark Mode Styles */
+body.dark-mode {
+  background-color: #181818;
+  color: #e0e0e0;
+}
+
+body.dark-mode h1, body.dark-mode .game-stats p {
+  color: #e0e0e0;
+}
+
+body.dark-mode .card {
+  background-color: #444;
+  color: #e0e0e0;
+}
+
+body.dark-mode .card.flipped {
+  background-color: #333;
+  color: #e0e0e0;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+}
+
+body.dark-mode .card.matched {
+  background-color: #28a745; /* Green background for matched cards */
+}
+
+body.dark-mode .home-container, body.dark-mode .description-content {
+  background-color: #2c2c2c;
+}
+
+body.dark-mode .home-container button, body.dark-mode .description-modal button {
+  background-color: #4CAF50;
+}
+
+/* Dark Mode Button positioned top right */
+.dark-mode-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 15px;
+  font-size: 18px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 100;
+}
+
+.dark-mode-btn:hover {
+  background-color: #45a049;
+}
+
+.dark-mode-btn:focus {
+  outline: none;
+}
